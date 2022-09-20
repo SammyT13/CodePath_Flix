@@ -22,8 +22,8 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         
         tableView.dataSource = self // must add
         tableView.delegate = self  // must add
-        // Do any additional setup after loading the view.
-        
+   
+        // Added API copy
         let url = URL(string: "https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed")!
         let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
         let session = URLSession(configuration: .default, delegate: nil, delegateQueue: OperationQueue.main)
@@ -34,10 +34,11 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
              } else if let data = data {
                     let dataDictionary = try! JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
                     
-                 self.movies = dataDictionary["results"] as! [[String:Any]] //downloads the movies
+                 // coded added for class//
+                 self.movies = dataDictionary["results"] as! [[String:Any]] //downloads the movies from website
                  
                  self.tableView.reloadData() // this calls the functions
-                    print(dataDictionary)
+    
 
                     // TODO: Get the array of movies
                     // TODO: Store the movies in a property to use elsewhere
@@ -46,17 +47,18 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
              }
         }
         task.resume()
-    }
-    // first func is asking for a number of rows
+    } // End of copied API
+    
+    // First func is asking for a number of rows & prints out each row
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return movies.count
     }
-    // second func is asking give me a cell
+    // Second func is asking for a cell with the information for each row
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "MovieCell") as! MovieCell// this recycles a cell if it's offscreen and if it isn't it will create one
-        
+        // gets the movies (dealing with row & section)
         let movie = movies[indexPath.row];
         let title = movie["title"] as! String
         
@@ -73,6 +75,25 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         cell.posterView.af_setImage(withURL: posterUrl!) // this will download the images
 
         return cell
+    }
+    
+    // Navigation Function //
+    
+    // This func helps prepare to send data
+    override func prepare (for segue: UIStoryboardSegue, sender: Any?) {
+        
+        // Finds the selected movie
+        let cell = sender as! UITableViewCell
+        let indexPath = tableView.indexPath(for: cell)!
+        let movie = movies[indexPath.row] // lets access to array
+        
+        // Passes the selected movie to the details view controller
+        
+        let detailsViewController = segue.destination as! MovieDetailsViewController // we cast it to 'MovieDetailsViewController'
+        detailsViewController.movie = movie // this second 'movie' is referring to the above 'let movie'
+        
+        // to remove the 'still selected' on the app when we go back you add code below
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 
 
