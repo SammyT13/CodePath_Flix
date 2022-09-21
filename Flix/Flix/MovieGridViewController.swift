@@ -33,7 +33,7 @@ class MovieGridViewController: UIViewController, UICollectionViewDataSource,
         layout.itemSize = CGSize(width: width, height: width * 3 / 2)
         
         // Added API copy
-        let url = URL(string: "https://api.themoviedb.org/3/movie/297762/similar?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed")! // changed to 'Wonder Woman' ID
+        let url = URL(string: "https://api.themoviedb.org/3/movie/297762/similar?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed")! // changed to 'Wonder Woman' ID 297762
         let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
         let session = URLSession(configuration: .default, delegate: nil, delegateQueue: OperationQueue.main)
         let task = session.dataTask(with: request) { (data, response, error) in
@@ -77,6 +77,22 @@ class MovieGridViewController: UIViewController, UICollectionViewDataSource,
         cell.posterView.af_setImage(withURL: posterUrl!)
         
         return cell
+    }
+    
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        // Finds the selected movie
+        let cell = sender as! UICollectionViewCell
+        let indexPath = collectionView.indexPath(for: cell)!
+        // TO DO: might need to change 'row' to 'item'
+        let movie = movies[indexPath.row]
+        
+        // Passes the selected movie to the 'PosterMovieDetailsController'
+        
+        let posterDetailsViewController = segue.destination as! PosterMovieDetailsViewController
+        posterDetailsViewController.movie = movie
+        
     }
     
     

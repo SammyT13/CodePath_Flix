@@ -94,6 +94,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         
         // to remove the 'still selected' on the app when we go back you add code below
         tableView.deselectRow(at: indexPath, animated: true)
+        
     }
 
 
